@@ -14,8 +14,8 @@ st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_
 openai.api_key = os.environ["OPENAI_API_KEY"]
 st.title("simesaba AI")
 st.subheader("AIは適当なことを言います。", divider='rainbow')
-simesaba_image = Image.open('https://github.com/misdelivery/simesaba-AI/blob/347057a12ce70156147f47904be47f61677d717f/images/b5mcll0M_400x400.jpg')
-user_image = Image.open('https://github.com/misdelivery/simesaba-AI/blob/347057a12ce70156147f47904be47f61677d717f/images/user_icon.jpg')
+simesaba_image = Image.open('images/simesaba_icon.jpg')
+user_image = Image.open('images/user_icon.jpg')
          
 if "messages" not in st.session_state.keys(): # Initialize the chat messages history
     st.session_state.messages = [
@@ -27,9 +27,9 @@ def load_data():
     with st.spinner(text="読み込み中・・・"):
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=220), chunk_size=500)
         storage_context = StorageContext.from_defaults(
-            docstore=SimpleDocumentStore.from_persist_dir(persist_dir="/Users/hk/Downloads/storage_context"),
-            vector_store=SimpleVectorStore.from_persist_dir(persist_dir="/Users/hk/Downloads/storage_context"),
-            index_store=SimpleIndexStore.from_persist_dir(persist_dir="/Users/hk/Downloads/storage_context"),
+            docstore=SimpleDocumentStore.from_persist_dir(persist_dir="storage_context"),
+            vector_store=SimpleVectorStore.from_persist_dir(persist_dir="storage_context"),
+            index_store=SimpleIndexStore.from_persist_dir(persist_dir="storage_context"),
         )
         index = load_index_from_storage(storage_context, service_context=service_context)
         return index
