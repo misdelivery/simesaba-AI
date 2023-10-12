@@ -14,8 +14,8 @@ st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_
 openai.api_key = os.environ["OPENAI_API_KEY"]
 st.title("simesaba AI")
 st.subheader("AIは適当なことを言います。", divider='rainbow')
-simesaba_image = Image.open('/Users/hk/Downloads/b5mcll0M_400x400.jpg')
-user_image = Image.open('/Users/hk/Documents/user_icon.jpg')
+simesaba_image = Image.open('https://github.com/misdelivery/simesaba-AI/blob/347057a12ce70156147f47904be47f61677d717f/images/b5mcll0M_400x400.jpg')
+user_image = Image.open('https://github.com/misdelivery/simesaba-AI/blob/347057a12ce70156147f47904be47f61677d717f/images/user_icon.jpg')
          
 if "messages" not in st.session_state.keys(): # Initialize the chat messages history
     st.session_state.messages = [
