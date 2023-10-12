@@ -1,4 +1,5 @@
 import os
+import asyncio
 from PIL import Image
 import streamlit as st
 from llama_index import ServiceContext, load_index_from_storage, StorageContext
@@ -10,6 +11,9 @@ from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
 
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+
 st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = os.environ["OPENAI_API_KEY"]
 st.title("simesaba AI")
@@ -17,7 +21,7 @@ st.subheader("AIは適当なことを言います。", divider='rainbow')
 simesaba_image = Image.open('images/simesaba_icon.jpg')
 user_image = Image.open('images/user_icon.jpg')
          
-if "messages" not in st.session_state.keys(): # Initialize the chat messages history
+if "messages" not in st.session_state.keys(): 
     st.session_state.messages = [
         {"role": "simesaba", "content": "なんすか？"}
     ]
