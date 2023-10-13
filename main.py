@@ -33,7 +33,7 @@ def load_data():
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
                                             dest_path=os.getcwd(), 
                                             unzip=True)
-        files = os.listdir(os.path.join(os.getcwd()), 'downloads')
+        files = os.listdir(os.path.join(os.getcwd(), 'downloads'))
         st.write(files)
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=220), chunk_size=500)
         storage_context = StorageContext.from_defaults(
