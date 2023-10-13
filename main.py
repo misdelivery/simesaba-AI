@@ -1,5 +1,4 @@
 import os
-import shutil
 import asyncio
 from PIL import Image
 import streamlit as st
@@ -11,6 +10,7 @@ from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
+from google_drive_downloader import GoogleDriveDownloader as gdd
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
@@ -30,7 +30,8 @@ if "messages" not in st.session_state.keys():
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="読み込み中・・・"):
-        shutil.unpack_archive('storage_context.zip')
+        gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
+                                    unzip=True)
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=220), chunk_size=500)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(persist_dir="storage_context"),
