@@ -29,7 +29,7 @@ if "messages" not in st.session_state.keys():
     
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="読み込み中・・・"):
+    with st.spinner(text="インストール中・・・"):
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
                                             dest_path=os.path.join(os.getcwd(), 'storage_context.zip'),
                                             unzip=True)
@@ -65,7 +65,8 @@ if "chat_engine" not in st.session_state.keys():
         chat_mode='context',
         memory=memory,
         context_template=context_template,
-        similarity_top_k=5
+        similarity_top_k=5, 
+        verbose=True
     )
 
 if prompt := st.chat_input("メッセージを送信"): 
