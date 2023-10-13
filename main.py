@@ -1,4 +1,5 @@
 import os
+import shutil
 import asyncio
 from PIL import Image
 import streamlit as st
@@ -29,6 +30,7 @@ if "messages" not in st.session_state.keys():
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="読み込み中・・・"):
+        shutil.unpack_archive('storage_context.zip')
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=220), chunk_size=500)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(persist_dir="storage_context"),
