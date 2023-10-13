@@ -1,3 +1,2 @@
-llama-index
-streamlit
-openai
+llama-index==0.8.43
+streamlit==1.27.2
