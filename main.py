@@ -31,10 +31,8 @@ if "messages" not in st.session_state.keys():
 def load_data():
     with st.spinner(text="読み込み中・・・"):
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
-                                            dest_path="/mount/src/simesaba-ai/", 
+                                            dest_path=os.getcwd(), 
                                             unzip=True)
-        files = os.listdir(os.getcwd())
-        st.write(files)
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=220), chunk_size=500)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), "storage_context")),
