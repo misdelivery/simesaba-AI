@@ -31,6 +31,7 @@ if "messages" not in st.session_state.keys():
 def load_data():
     with st.spinner(text="読み込み中・・・"):
         dest_path=os.path.join(os.getcwd(), 'downloads')
+        os.makedirs(dest_path)
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
                                             dest_path=dest_path,
                                             unzip=True)
