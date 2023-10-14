@@ -65,7 +65,7 @@ if "chat_engine" not in st.session_state.keys():
         chat_mode='context',
         memory=memory,
         context_template=context_template,
-        similarity_top_k=6, 
+        similarity_top_k=4, 
     )
 
 if prompt := st.chat_input("メッセージを送信"): 
