@@ -40,7 +40,7 @@ def load_data():
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
                                             dest_path=os.path.join(os.getcwd(), 'storage_context.zip'),
                                             unzip=True)
-        gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZC',
+        gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZ',
                                     dest_path=os.path.join(os.getcwd(), 'audio.zip'),
                                     unzip=True)
         service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=150), chunk_size=400)
