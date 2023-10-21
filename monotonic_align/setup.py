@@ -1,5 +1,7 @@
 from distutils.core import setup
 import os
+import sys
+sys.path.append('/home/appuser/.local/bin')
 os.system("pip install Cython")
 from Cython.Build import cythonize
 import numpy
