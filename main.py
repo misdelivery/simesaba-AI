@@ -11,6 +11,7 @@ from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
 from google_drive_downloader import GoogleDriveDownloader as gdd
+from generate_audio import inference
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
@@ -39,16 +40,22 @@ def load_data():
         gdd.download_file_from_google_drive(file_id='1aEhDmb0mXCTIWrDSMFxvgpIHQJoyEFGC',
                                             dest_path=os.path.join(os.getcwd(), 'storage_context.zip'),
                                             unzip=True)
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=190), chunk_size=400)
+        gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZC',
+                                    dest_path=os.path.join(os.getcwd(), 'audio.zip'),
+                                    unzip=True)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=150), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), 'storage_context')),
             vector_store=SimpleVectorStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), 'storage_context')),
             index_store=SimpleIndexStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), 'storage_context')),
         )
         index = load_index_from_storage(storage_context, service_context=service_context)
-        return index
 
-index = load_data()
+        config_path = os.path.join(os.getcwd(), 'audio/config.json')
+        G_model_path = os.path.join(os.getcwd(), 'audio/G_simesaba.pth')
+        return index, config_path, G_model_path
+
+index, config_path, G_model_path = load_data()
 
 if "chat_engine" not in st.session_state.keys(): 
     context_template_str = (
@@ -65,7 +72,7 @@ if "chat_engine" not in st.session_state.keys():
 
     context_template = PromptTemplate(context_template_str)
 
-    memory = ChatMemoryBuffer.from_defaults(token_limit=190)
+    memory = ChatMemoryBuffer.from_defaults(token_limit=150)
 
     st.session_state.chat_engine = index.as_chat_engine(
         chat_mode='context',
@@ -96,3 +103,6 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         message_placeholder.markdown(full_response)
         message = {"role": "simesaba", "content": full_response}
         st.session_state.messages.append(message) 
+        inference(config_path, G_model_path, full_response)
+        audio_path = os.path.join(os.getcwd(), "infer_logs/output_audio.wav")
+        st.audio(audio_path, format='audio/wav', start_time=0)
