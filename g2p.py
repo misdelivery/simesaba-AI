@@ -1,6 +1,7 @@
 import os
 import sys
 sys.path.append('/home/appuser/.local/bin')
+sys.path.append('/home/appuser/.local/lib/python3.9/site-packages')
 os.system("pip install pyopenjtalk")
 
 import pyopenjtalk, re
