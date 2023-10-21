@@ -11,7 +11,7 @@ import os
 current_dir = os.getcwd()
 monotonic_dir = os.path.join(current_dir, 'monotonic_align')
 os.chdir(monotonic_dir)
-os.makedirs("monotonic_align", exist_ok=True)'
+os.makedirs("monotonic_align", exist_ok=True)
 os.system('python setup.py build_ext --inplace')
 os.chdir(current_dir)
 
