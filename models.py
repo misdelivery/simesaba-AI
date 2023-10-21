@@ -8,7 +8,7 @@ import modules
 import attentions
 import os
 
-os.chdir('monotonic_align/monotonic_align')
+os.chdir('/mount/src/simesaba-ai/monotonic_align/monotonic_align')
 os.system('python setup.py build_ext --inplace')
 os.chdir('../../')
 
