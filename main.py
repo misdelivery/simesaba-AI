@@ -1,5 +1,7 @@
 import os
 import asyncio
+import base64
+import time
 from PIL import Image
 import streamlit as st
 from llama_index import ServiceContext, load_index_from_storage, StorageContext
