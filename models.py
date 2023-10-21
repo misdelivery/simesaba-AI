@@ -8,9 +8,11 @@ import modules
 import attentions
 import os
 
-os.chdir('/mount/src/simesaba-ai/monotonic_align/monotonic_align')
+current_dir = os.getcwd()
+monotonic_dir = os.path.join(current_dir, 'monotonic_align/monotonic_align')
+os.chdir(monotonic_dir)
 os.system('python setup.py build_ext --inplace')
-os.chdir('../../')
+os.chdir(current_dir)
 
 import monotonic_align
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
