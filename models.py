@@ -15,6 +15,8 @@ from pqmf import PQMF
 from stft import TorchSTFT
 import math
 
+os.chdir('monotonic_align/monotonic_align')
+os.system('python setup.py build_ext --inplace')
 
 class StochasticDurationPredictor(nn.Module):
   def __init__(self, in_channels, filter_channels, kernel_size, p_dropout, n_flows=4, gin_channels=0):
