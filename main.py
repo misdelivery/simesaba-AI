@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.append('/home/appuser/.local/bin')
+os.system("pip install pyopenjtalk")
 import asyncio
 from PIL import Image
 import streamlit as st
