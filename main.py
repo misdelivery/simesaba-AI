@@ -57,6 +57,25 @@ def load_data():
 
 index, config_path, G_model_path = load_data()
 
+def play_audio(audio_path):
+    audio_placeholder = st.empty()
+
+    file_ = open(audio_path, "rb")
+    contents = file_.read()
+    file_.close()
+
+    audio_str = "data:audio/ogg;base64,%s"%(base64.b64encode(contents).decode())
+    audio_html = """
+                     <audio controls autoplay=True controlslist="nodownload">
+                    <source src="%s" type="audio/ogg" autoplay=True>
+                    Your browser does not support the audio element.
+                    </audio>
+                """ %audio_str
+
+    audio_placeholder.empty()
+    time.sleep(0.5) #これがないと上手く再生されません
+    audio_placeholder.markdown(audio_html, unsafe_allow_html=True)
+
 if "chat_engine" not in st.session_state.keys(): 
     context_template_str = (
     "###設定:"
@@ -105,4 +124,4 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         st.session_state.messages.append(message) 
         inference(config_path, G_model_path, full_response)
         audio_path = os.path.join(os.getcwd(), "/mount/src/simesaba-ai/audio/infer_logs/output_audio.wav")
-        st.audio(audio_path, format='audio/wav', start_time=0)
+        play_audio(audio_path)
