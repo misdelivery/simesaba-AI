@@ -16,8 +16,8 @@ from generate_audio import inference
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 
-directory_contents = os.listdir()
-st.write(directory_contents)
+os.chdir('monotonic_align/monotonic_align')
+os/system('python setup.py build_ext --inplace')
 
 import logging
 import sys
