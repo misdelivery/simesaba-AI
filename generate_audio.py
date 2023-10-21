@@ -49,7 +49,7 @@ def inference(config_path, G_model_path, text):
                             length_scale=length_scale)[0][0,0].data.cpu().float().numpy()
 
     # save audio
-    save_dir = os.path.join(os.getcwd(), "/infer_logs/")
+    save_dir = "/mount/src/simesaba-ai/audio/infer_logs/"
     os.makedirs(save_dir, exist_ok=True)
 
     # Fixed filename
