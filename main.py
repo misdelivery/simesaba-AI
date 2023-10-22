@@ -31,7 +31,7 @@ if "messages" not in st.session_state.keys():
         {"role": "simesaba", "content": "なんすか？"}
     ]
     
-@st.cache_data(show_spinner=False, persist="disk")
+@st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="インストール中・・・"):
         gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZ',

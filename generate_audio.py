@@ -7,6 +7,7 @@ from text import cleaned_text_to_sequence
 from g2p import pyopenjtalk_g2p_prosody
 import commons
 import soundfile as sf
+import streamlit as st
 
 def get_text(text, hps):
     text_norm = cleaned_text_to_sequence(text)
@@ -15,7 +16,8 @@ def get_text(text, hps):
     text_norm = torch.LongTensor(text_norm)
     return text_norm
 
-def inference(config_path, G_model_path, text):
+@st.cache_resource(show_spinner=False)
+def load_model(config_path, G_model_path):
     device = "cpu"
 
     # load config.json
@@ -28,6 +30,12 @@ def inference(config_path, G_model_path, text):
         **hps.model).to(device)  
     _ = net_g.eval()
     _ = utils.load_checkpoint(G_model_path, net_g, None)
+
+    return net_g, hps
+
+def inference(config_path, G_model_path, text):
+    device = "cpu"
+    net_g, hps = load_model(config_path, G_model_path)
 
     # parameter settings
     noise_scale     = torch.tensor(0.66)    # adjust z_p noise
