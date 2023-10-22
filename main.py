@@ -47,8 +47,8 @@ def load_data():
         )
         index = load_index_from_storage(storage_context, service_context=service_context)
 
-        config_path = os.path.join(os.getcwd(), 'audio/config.json')
-        G_model_path = os.path.join(os.getcwd(), 'audio/G_simesaba.pth')
+        config_path = conn.open('simesaba_ai/audio/config.json')
+        G_model_path = conn.open('simesaba_ai/G_simesaba.pth')
         return index, config_path, G_model_path
 
 index, config_path, G_model_path = load_data()
