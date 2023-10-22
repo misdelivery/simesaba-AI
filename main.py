@@ -39,7 +39,7 @@ def load_data():
         gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZ',
                                     dest_path=os.path.join(os.getcwd(), 'audio.zip'),
                                     unzip=True)
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=150), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=140), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), 'storage_context')),
             vector_store=SimpleVectorStore.from_persist_dir(persist_dir= os.path.join(os.getcwd(), 'storage_context')),
@@ -68,7 +68,7 @@ if "chat_engine" not in st.session_state.keys():
 
     context_template = PromptTemplate(context_template_str)
 
-    memory = ChatMemoryBuffer.from_defaults(token_limit=150)
+    memory = ChatMemoryBuffer.from_defaults(token_limit=300)
 
     st.session_state.chat_engine = index.as_chat_engine(
         chat_mode='context',
@@ -87,6 +87,10 @@ for message in st.session_state.messages:
     if message["role"] == "simesaba":
         with st.chat_message(message["role"], avatar=simesaba_image):
             st.write(message["content"])
+            if len(st.session_state.messages) == 1:
+                inference(config_path, G_model_path, "なんすか？")
+                audio_path = os.path.join(os.getcwd(), "/mount/src/simesaba-ai/audio/infer_logs/output_audio.wav")
+                st.audio(audio_path, format='audio/wav', start_time=0)
 
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
