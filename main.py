@@ -34,6 +34,9 @@ if "messages" not in st.session_state.keys():
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="インストール中・・・"):
+        gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZ',
+                                    dest_path=os.path.join(os.getcwd(), 'audio.zip'),
+                                    unzip=True)
         conn = st.experimental_connection('gcs', type=FilesConnection)
         docstore = conn.read(f"simesaba_ai/storage_context/docstore.json", input_format='json')
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
@@ -47,8 +50,8 @@ def load_data():
         )
         index = load_index_from_storage(storage_context, service_context=service_context)
 
-        config_path = conn.open('simesaba_ai/audio/config.json')
-        G_model_path = conn.open('simesaba_ai/audio/G_simesaba.pth')
+        config_path = os.path.join(os.getcwd(), 'audio/config.json')
+        G_model_path = os.path.join(os.getcwd(), 'audio/G_simesaba.pth')
         return index, config_path, G_model_path
 
 index, config_path, G_model_path = load_data()
