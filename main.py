@@ -87,10 +87,6 @@ for message in st.session_state.messages:
     if message["role"] == "simesaba":
         with st.chat_message(message["role"], avatar=simesaba_image):
             st.write(message["content"])
-            if len(st.session_state.messages) == 1:
-                inference(config_path, G_model_path, "なんすか？")
-                audio_path = os.path.join(os.getcwd(), "/mount/src/simesaba-ai/audio/infer_logs/output_audio.wav")
-                st.audio(audio_path, format='audio/wav', start_time=0)
 
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
