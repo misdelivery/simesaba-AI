@@ -100,5 +100,5 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         message = {"role": "simesaba", "content": full_response}
         st.session_state.messages.append(message) 
         inference(config_path, G_model_path, full_response)
-        audio_path = os.path.join(os.getcwd(), "/mount/src/simesaba-ai/audio/infer_logs/output_audio.opus")
-        st.audio(audio_path, format='opus', start_time=0)
+        audio_path = os.path.join(os.getcwd(), "/mount/src/simesaba-ai/audio/infer_logs/output_audio.mp3")
+        st.audio(audio_path, format='audio/mp3', start_time=0)

@@ -53,13 +53,13 @@ def inference(config_path, G_model_path, text):
     os.makedirs(save_dir, exist_ok=True)
 
     # Fixed filename
-    save_path = os.path.join(save_dir, "output_audio.opus")
+    save_path = os.path.join(save_dir, "output_audio.mp3")
     try:
         sf.write(
              file=save_path,
              data=audio,
              samplerate=hps.data.sampling_rate,
-             format="opus")
+             format="mp3")
     except Exception as e:
         # Handling file writing issues
         print(f"An error occurred while saving the audio file: {str(e)}")
