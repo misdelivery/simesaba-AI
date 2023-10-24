@@ -1,5 +1,16 @@
-import pyopenjtalk
-import re
+import os
+import sys
+import streamlit as st
+
+@st.cache_resource(show_spinner=False)
+def package_install_2():
+    sys.path.append('/home/appuser/.local/bin')
+    sys.path.append('/home/appuser/.local/lib/python3.9/site-packages')
+    os.system("pip install pyopenjtalk")
+
+package_install_2()
+
+import pyopenjtalk, re
 from packaging.version import parse as V
 
 
