@@ -3,7 +3,7 @@ import base64
 import numpy as np
 
 def simesaba_voice(text):
-    url = "http://<YOUR_FLASK_APP_IP>:8080/tts"
+    url = "http://<YOUR_FLASK_APP_IP>:8080/simesaba-voice"
     headers = {
         'Content-Type': 'text/plain'
     }
