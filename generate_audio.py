@@ -55,24 +55,10 @@ def inference(config_path, G_model_path, text):
                             noise_scale=noise_scale,
                             noise_scale_w=noise_scale_w,
                             length_scale=length_scale)[0][0,0].data.cpu().float().numpy()
+        
+        samplerate = hps.data.sampling_rate
 
-    # save audio
-    save_dir = "/mount/src/simesaba-ai/audio/infer_logs/"
-    os.makedirs(save_dir, exist_ok=True)
-
-    # Fixed filename
-    save_path = os.path.join(save_dir, "output_audio.wav")
-    try:
-        sf.write(
-             file=save_path,
-             data=audio,
-             samplerate=hps.data.sampling_rate,
-             format="wav")
-    except Exception as e:
-        # Handling file writing issues
-        print(f"An error occurred while saving the audio file: {str(e)}")
-
-    return 0
+        return audio, samplerate
 
 if __name__ == "__main__":
     config_path = "/Users/hk/Downloads/audio/config.json"
