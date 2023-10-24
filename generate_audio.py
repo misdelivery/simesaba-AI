@@ -1,4 +1,3 @@
-import os
 import torch
 import utils
 from models import SynthesizerTrn
@@ -6,7 +5,6 @@ from text.symbols import symbols
 from text import cleaned_text_to_sequence
 from g2p import pyopenjtalk_g2p_prosody
 import commons
-import soundfile as sf
 import streamlit as st
 
 def get_text(text, hps):
