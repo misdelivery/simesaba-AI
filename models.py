@@ -1,4 +1,3 @@
-import copy
 import math
 import torch
 from torch import nn
@@ -6,15 +5,6 @@ from torch.nn import functional as F
 import commons
 import modules
 import attentions
-import os
-
-current_dir = os.getcwd()
-monotonic_dir = os.path.join(current_dir, 'monotonic_align')
-os.chdir(monotonic_dir)
-os.makedirs("monotonic_align", exist_ok=True)
-os.system('python setup.py build_ext --inplace')
-os.chdir(current_dir)
-
 import monotonic_align
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm

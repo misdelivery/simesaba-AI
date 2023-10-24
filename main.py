@@ -1,7 +1,5 @@
 import os
 import asyncio
-import base64
-import time
 from PIL import Image
 import streamlit as st
 from st_files_connection import FilesConnection
@@ -15,9 +13,28 @@ from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
 from google_drive_downloader import GoogleDriveDownloader as gdd
 from generate_audio import inference
+import sys
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
+
+@st.cache_resource(show_spinner=False)
+def install_packages():
+    sys.path.append('/home/appuser/.local/bin')
+    sys.path.append('/home/appuser/.local/lib/python3.9/site-packages')
+    os.system("pip install Cython numpy pyopenjtalk")
+
+@st.cache_resource(show_spinner=False)
+def load_monotonic_align():
+  current_dir = os.getcwd()
+  monotonic_dir = os.path.join(current_dir, 'monotonic_align')
+  os.chdir(monotonic_dir)
+  os.makedirs("monotonic_align", exist_ok=True)
+  os.system('python setup.py build_ext --inplace')
+  os.chdir(current_dir)
+
+install_packages()
+load_monotonic_align()
 
 st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = os.environ["OPENAI_API_KEY"]
