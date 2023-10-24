@@ -1,22 +1,5 @@
 import os
-import asyncio
-from PIL import Image
-import streamlit as st
-from st_files_connection import FilesConnection
-from llama_index import ServiceContext, load_index_from_storage, StorageContext
-from llama_index.llms import OpenAI
-import openai
-from llama_index.storage.docstore import SimpleDocumentStore
-from llama_index.storage.index_store import SimpleIndexStore
-from llama_index.vector_stores import SimpleVectorStore
-from llama_index.prompts import PromptTemplate
-from llama_index.memory import ChatMemoryBuffer
-from google_drive_downloader import GoogleDriveDownloader as gdd
-from generate_audio import inference
 import sys
-
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 
 def package_install():
     sys.path.append('/home/appuser/.local/bin')
@@ -33,6 +16,25 @@ def load_monotonic_align():
 
 package_install()
 load_monotonic_align()
+
+import asyncio
+from PIL import Image
+import streamlit as st
+from st_files_connection import FilesConnection
+from llama_index import ServiceContext, load_index_from_storage, StorageContext
+from llama_index.llms import OpenAI
+import openai
+from llama_index.storage.docstore import SimpleDocumentStore
+from llama_index.storage.index_store import SimpleIndexStore
+from llama_index.vector_stores import SimpleVectorStore
+from llama_index.prompts import PromptTemplate
+from llama_index.memory import ChatMemoryBuffer
+from google_drive_downloader import GoogleDriveDownloader as gdd
+from generate_audio import inference
+
+
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = os.environ["OPENAI_API_KEY"]
