@@ -59,9 +59,9 @@ def inference(config_path, G_model_path, text):
         samplerate = hps.data.sampling_rate
 
         return audio, samplerate
+    
+def main():
+    None
 
 if __name__ == "__main__":
-    config_path = "/Users/hk/Downloads/audio/config.json"
-    G_model_path = "/Users/hk/Downloads/audio/G_simesaba.pth"
-    text = "こんにちは"
-    inference(config_path, G_model_path, text)
+    main()
