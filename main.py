@@ -1,11 +1,14 @@
 import os
 import sys
+import streamlit as st
 
+@st.cache_resource(show_spinner=False)
 def package_install():
     sys.path.append('/home/appuser/.local/bin')
     sys.path.append('/home/appuser/.local/lib/python3.9/site-packages')
     os.system("pip install Cython numpy pyopenjtalk")
 
+@st.cache_resource(show_spinner=False)
 def load_monotonic_align():
     current_dir = os.getcwd()
     monotonic_dir = os.path.join(current_dir, 'monotonic_align')
@@ -19,7 +22,6 @@ load_monotonic_align()
 
 import asyncio
 from PIL import Image
-import streamlit as st
 from st_files_connection import FilesConnection
 from llama_index import ServiceContext, load_index_from_storage, StorageContext
 from llama_index.llms import OpenAI
