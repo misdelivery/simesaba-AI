@@ -11,10 +11,12 @@ from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
+from audiorecorder import audiorecorder
 from simesaba_voice import simesaba_voice
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
+
 
 st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -36,7 +38,7 @@ def load_data():
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
         index_store = conn.read(f"simesaba_ai/storage_context/index_store.json", input_format='json')
 
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=125), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=120), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_dict(docstore),
             vector_store=SimpleVectorStore.from_dict(vector_store),
@@ -74,7 +76,15 @@ if "chat_engine" not in st.session_state.keys():
 if prompt := st.chat_input("メッセージを送信"): 
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-for message in st.session_state.messages: 
+if input_audio := audiorecorder("音声入力を開始", "音声入力を終了"):
+    input_audio_file = "input_audio.wav"
+    input_audio.export(input_audio_file, format="wav")
+    with open(input_audio_file, 'rb') as audio_file:
+        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+    prompt = transcript['text']
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+for i, message in enumerate(st.session_state.messages): 
     if message["role"] == "user":
         with st.chat_message(message["role"], avatar=user_image):
             st.write(message["content"])
@@ -82,8 +92,8 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=simesaba_image):
             st.write(message["content"])
         if len(st.session_state.messages) == 1:
-            audio = simesaba_voice("なんすか？")
-            st.audio(audio, sample_rate=44100)
+            output_audio = simesaba_voice("なんすか？")
+            st.audio(output_audio, sample_rate=44100)
 
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
@@ -94,9 +104,6 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         sentence_count = 0
         message_placeholder = st.empty()
 
-        def async_simesaba_voice(index, sentence):
-            audio_list[index] = simesaba_voice(sentence)
-
         for token in streaming_response.response_gen:
             RealTimeResponce += token
             full_response += token
@@ -105,5 +112,6 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         message_placeholder.markdown(full_response)
         message = {"role": "simesaba", "content": full_response}
         st.session_state.messages.append(message)
-        audio = simesaba_voice(full_response)
-        st.audio(audio, sample_rate=44100)
+        output_audio = simesaba_voice(full_response)
+        st.audio(output_audio, sample_rate=44100)
+
