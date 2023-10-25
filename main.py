@@ -1,4 +1,6 @@
 import os
+import time
+import numpy as np
 import streamlit as st
 import asyncio
 from PIL import Image
@@ -12,7 +14,7 @@ from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
 from google_drive_downloader import GoogleDriveDownloader as gdd
-import simesaba_voice
+from simesaba_voice import simesaba_voice
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
@@ -31,28 +33,22 @@ if "messages" not in st.session_state.keys():
     
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="インストール中・・・"):
-        gdd.download_file_from_google_drive(file_id='1YjstzQwikJB2eGJmNou1YGibWy7dEjSZ',
-                                    dest_path=os.path.join(os.getcwd(), 'audio.zip'),
-                                    unzip=True)
+    with st.spinner(text="・・・"):
         conn = st.experimental_connection('gcs', type=FilesConnection)
         docstore = conn.read(f"simesaba_ai/storage_context/docstore.json", input_format='json')
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
         index_store = conn.read(f"simesaba_ai/storage_context/index_store.json", input_format='json')
 
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=140), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=120), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_dict(docstore),
             vector_store=SimpleVectorStore.from_dict(vector_store),
             index_store=SimpleIndexStore.from_dict(index_store),
         )
         index = load_index_from_storage(storage_context, service_context=service_context)
+        return index
 
-        config_path = os.path.join(os.getcwd(), 'audio/config.json')
-        G_model_path = os.path.join(os.getcwd(), 'audio/G_simesaba.pth')
-        return index, config_path, G_model_path
-
-index, config_path, G_model_path = load_data()
+index = load_data()
 
 if "chat_engine" not in st.session_state.keys(): 
     context_template_str = (
@@ -88,17 +84,29 @@ for message in st.session_state.messages:
     if message["role"] == "simesaba":
         with st.chat_message(message["role"], avatar=simesaba_image):
             st.write(message["content"])
+        if len(st.session_state.messages) == 1:
+            audio = simesaba_voice("なんすか？")
+            st.audio(audio, sample_rate=44100)
 
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
+        audio_list = []
         streaming_response = st.session_state.chat_engine.stream_chat(prompt)
         full_response = ""
+        RealTimeResponce = ""
+        sentence_count = 0
         message_placeholder = st.empty()
+
+        def async_simesaba_voice(index, sentence):
+            audio_list[index] = simesaba_voice(sentence)
+
         for token in streaming_response.response_gen:
+            RealTimeResponce += token
             full_response += token
             message_placeholder.markdown(full_response + "▌")
+
         message_placeholder.markdown(full_response)
         message = {"role": "simesaba", "content": full_response}
-        st.session_state.messages.append(message) 
-        audio= simesaba_voice(full_response)
+        st.session_state.messages.append(message)
+        audio = simesaba_voice(full_response)
         st.audio(audio, sample_rate=44100)

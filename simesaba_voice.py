@@ -1,19 +1,21 @@
 import requests
 import base64
 import numpy as np
+import io
 
 def simesaba_voice(text):
-    url = "http://<YOUR_FLASK_APP_IP>:8080/simesaba-voice"
+    url = "https://simesaba-voice-zrc662eobq-an.a.run.app/"
     headers = {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'text/plain; charset=utf-8'  # UTF-8を指定
     }
 
-    response = requests.post(url, data=text, headers=headers)
+    response = requests.post(url, data=text.encode('utf-8'), headers=headers)
     data = response.json()
 
     audio = base64.b64decode(data['audio_base64'])
 
-    audio = np.load(audio)
+    with io.BytesIO(audio) as buffer:
+        audio = np.load(buffer, allow_pickle=True)
 
     return audio
 
