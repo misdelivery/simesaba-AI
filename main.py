@@ -30,13 +30,13 @@ if "messages" not in st.session_state.keys():
     
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="・・・"):
+    with st.spinner(text="ちょっと待ってや・・・"):
         conn = st.experimental_connection('gcs', type=FilesConnection)
         docstore = conn.read(f"simesaba_ai/storage_context/docstore.json", input_format='json')
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
         index_store = conn.read(f"simesaba_ai/storage_context/index_store.json", input_format='json')
 
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=120), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=125), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_dict(docstore),
             vector_store=SimpleVectorStore.from_dict(vector_store),
