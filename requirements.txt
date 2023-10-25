@@ -1,16 +1,4 @@
 llama-index==0.8.43
 streamlit==1.27.2
-torch==1.13.1 
-torchvision==0.14.1 
-torchaudio==0.13.1
-librosa==0.9.1
-Cython
-matplotlib
-phonemizer
-scipy
-tensorboard
-Unidecode
-soundcard
 gcsfs==2023.9.2
 git+https://github.com/streamlit/files-connection
-git+https://github.com/davide-f/google-drive-downloader.git

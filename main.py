@@ -1,6 +1,4 @@
 import os
-import time
-import numpy as np
 import streamlit as st
 import asyncio
 from PIL import Image
@@ -13,7 +11,6 @@ from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 from llama_index.prompts import PromptTemplate
 from llama_index.memory import ChatMemoryBuffer
-from google_drive_downloader import GoogleDriveDownloader as gdd
 from simesaba_voice import simesaba_voice
 
 loop = asyncio.new_event_loop()
