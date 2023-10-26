@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 import asyncio
 from PIL import Image
@@ -16,7 +17,6 @@ from simesaba_voice import simesaba_voice
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
-
 
 st.set_page_config(page_title="simesaba AI", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -38,7 +38,7 @@ def load_data():
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
         index_store = conn.read(f"simesaba_ai/storage_context/index_store.json", input_format='json')
 
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=120), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=150), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_dict(docstore),
             vector_store=SimpleVectorStore.from_dict(vector_store),
@@ -60,6 +60,7 @@ if "chat_engine" not in st.session_state.keys():
     "---------------------\n"
     "あなたの記憶：{context_str}\n"
     "---------------------\n"
+    "最大120トークンの返信："
     )
 
     context_template = PromptTemplate(context_template_str)
@@ -76,14 +77,6 @@ if "chat_engine" not in st.session_state.keys():
 if prompt := st.chat_input("メッセージを送信"): 
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-if input_audio := audiorecorder("音声入力を開始", "音声入力を終了"):
-    input_audio_file = "input_audio.wav"
-    input_audio.export(input_audio_file, format="wav")
-    with open(input_audio_file, 'rb') as audio_file:
-        transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    prompt = transcript['text']
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
 for i, message in enumerate(st.session_state.messages): 
     if message["role"] == "user":
         with st.chat_message(message["role"], avatar=user_image):
@@ -94,24 +87,47 @@ for i, message in enumerate(st.session_state.messages):
         if len(st.session_state.messages) == 1:
             output_audio = simesaba_voice("なんすか？")
             st.audio(output_audio, sample_rate=44100)
+        if i == len(st.session_state.messages) - 1:
+            if input_audio := audiorecorder("音声入力を開始", "音声入力を終了"):
+                input_audio_file = "input_audio.wav"
+                input_audio.export(input_audio_file, format="wav")
+                with open(input_audio_file, 'rb') as audio_file:
+                    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+                prompt = transcript['text']
+                st.session_state.messages.append({"role": "user", "content": prompt})
 
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
         audio_list = []
         streaming_response = st.session_state.chat_engine.stream_chat(prompt)
         full_response = ""
-        RealTimeResponce = ""
-        sentence_count = 0
         message_placeholder = st.empty()
 
-        for token in streaming_response.response_gen:
-            RealTimeResponce += token
-            full_response += token
-            message_placeholder.markdown(full_response + "▌")
+        one_sentence = []
+        for token in streaming_response.response_gen:            
+            split_occurred = False  
+
+            for p in ['。', '！', '？']:
+                if p in token:
+                    before, _, after = token.partition(p)
+                    
+                    one_sentence.append(before + p)
+                    
+                    for part in one_sentence:
+                        full_response += part
+                        message_placeholder.markdown(full_response+ "▌")
+                        time.sleep(0.02)
+                    message_placeholder.markdown(full_response)
+
+                    one_sentence = [after]
+                    split_occurred = True
+                    break
+
+            if not split_occurred:
+                one_sentence.append(token)
 
         message_placeholder.markdown(full_response)
         message = {"role": "simesaba", "content": full_response}
         st.session_state.messages.append(message)
         output_audio = simesaba_voice(full_response)
         st.audio(output_audio, sample_rate=44100)
-
