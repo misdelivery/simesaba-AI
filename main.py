@@ -38,7 +38,7 @@ def load_data():
         vector_store = conn.read(f"simesaba_ai/storage_context/vector_store.json", input_format='json')
         index_store = conn.read(f"simesaba_ai/storage_context/index_store.json", input_format='json')
 
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=135), chunk_size=400)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="ft:gpt-3.5-turbo-0613:personal::87Id1XdJ", temperature=1, max_tokens=145), chunk_size=400)
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_dict(docstore),
             vector_store=SimpleVectorStore.from_dict(vector_store),
