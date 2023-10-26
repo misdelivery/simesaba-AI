@@ -60,7 +60,7 @@ if "chat_engine" not in st.session_state.keys():
     "---------------------\n"
     "あなたの記憶：{context_str}\n"
     "---------------------\n"
-    "最大120トークンの返信："
+    "最大140トークンの返信："
     )
 
     context_template = PromptTemplate(context_template_str)
