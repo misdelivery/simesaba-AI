@@ -92,7 +92,7 @@ for i, message in enumerate(st.session_state.messages):
                 input_audio_file = "input_audio.wav"
                 input_audio.export(input_audio_file, format="wav")
                 with open(input_audio_file, 'rb') as audio_file:
-                    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+                    transcript = openai.Audio.transcribe("whisper-1", audio_file, language="ja")
                 prompt = transcript['text']
                 st.session_state.messages.append({"role": "user", "content": prompt})
 
