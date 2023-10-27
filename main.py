@@ -29,6 +29,7 @@ if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "simesaba", "content": "なんすか？"}
     ]
+    st.session_state.first_message = True
     
 @st.cache_resource(show_spinner=False)
 def load_data():
@@ -82,11 +83,12 @@ for i, message in enumerate(st.session_state.messages):
             st.write(message["content"])
     if message["role"] == "simesaba":
         with st.chat_message(message["role"], avatar=simesaba_image):
-            if len(st.session_state.messages) == 1:
+            if len(st.session_state.messages) == 1 and st.session_state.first_message==True:
                 with st.spinner(text="ちょっと待ってや・・・"):
                     output_audio = simesaba_voice("なんすか？")
                 st.write(message["content"])
                 st.audio(output_audio, sample_rate=44100)
+                st.session_state.first_message = False
             else:
                 st.write(message["content"])
         if i == len(st.session_state.messages) - 1:
