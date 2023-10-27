@@ -1,1 +1,1 @@
-# simesaba-AI
+声で、文字で、simesaba AIとおしゃべりしましょう。
