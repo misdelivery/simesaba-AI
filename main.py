@@ -101,6 +101,9 @@ for i, message in enumerate(st.session_state.messages):
                 prompt = transcript['text']
                 st.session_state.messages.append({"role": "user", "content": prompt})
 
+async def generate_voice(text):
+    return await simesaba_voice(text)
+
 if st.session_state.messages[-1]["role"] != "simesaba":
     with st.chat_message("simesaba", avatar=simesaba_image):
         audio_list = []
