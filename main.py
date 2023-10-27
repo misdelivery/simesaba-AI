@@ -3,6 +3,7 @@ import time
 import streamlit as st
 import asyncio
 import concurrent.futures
+import numpy as np
 from PIL import Image
 from st_files_connection import FilesConnection
 from llama_index import ServiceContext, load_index_from_storage, StorageContext
@@ -152,5 +153,5 @@ if st.session_state.messages[-1]["role"] != "simesaba":
                 second_future = executor.submit(simesaba_voice, "".join(second_half))    
                 first_half_audio = first_future.result()
                 second_half_audio = second_future.result()
-            output_audio = first_half_audio + second_half_audio
+            output_audio = np.concatenate((first_half_audio, second_half_audio))
         st.audio(output_audio, sample_rate=44100)
