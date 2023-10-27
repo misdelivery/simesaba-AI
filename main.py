@@ -2,6 +2,7 @@ import os
 import time
 import streamlit as st
 import asyncio
+import concurrent.futures
 from PIL import Image
 from st_files_connection import FilesConnection
 from llama_index import ServiceContext, load_index_from_storage, StorageContext
@@ -108,6 +109,8 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         message_placeholder = st.empty()
 
         one_sentence = []
+        first_half = []
+        second_half = []
         for token in streaming_response.response_gen:            
             split_occurred = False  
 
@@ -116,6 +119,10 @@ if st.session_state.messages[-1]["role"] != "simesaba":
                     before, _, after = token.partition(p)
                     
                     one_sentence.append(before + p)
+                    if len(first_half) < 2:
+                        first_half.append("".join(one_sentence))
+                    else:
+                        second_half.append("".join(one_sentence))
                     
                     for part in one_sentence:
                         full_response += part
@@ -133,5 +140,14 @@ if st.session_state.messages[-1]["role"] != "simesaba":
         message_placeholder.markdown(full_response)
         message = {"role": "simesaba", "content": full_response}
         st.session_state.messages.append(message)
-        output_audio = simesaba_voice(full_response)
+        if len(second_half) == 0:
+            first_half_audio = simesaba_voice("".join(first_half))
+            output_audio = first_half_audio
+        else:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                first_future = executor.submit(simesaba_voice, "".join(first_half))
+                second_future = executor.submit(simesaba_voice, "".join(second_half))    
+                first_half_audio = first_future.result()
+                second_half_audio = second_future.result()
+            output_audio = first_half_audio + second_half_audio
         st.audio(output_audio, sample_rate=44100)
