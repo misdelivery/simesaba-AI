@@ -82,10 +82,13 @@ for i, message in enumerate(st.session_state.messages):
             st.write(message["content"])
     if message["role"] == "simesaba":
         with st.chat_message(message["role"], avatar=simesaba_image):
-            st.write(message["content"])
-        if len(st.session_state.messages) == 1:
-            output_audio = simesaba_voice("なんすか？")
-            st.audio(output_audio, sample_rate=44100)
+            if len(st.session_state.messages) == 1:
+                with st.spinner(text="ちょっと待ってや・・・"):
+                    output_audio = simesaba_voice("なんすか？")
+                st.write(message["content"])
+                st.audio(output_audio, sample_rate=44100)
+            else:
+                st.write(message["content"])
         if i == len(st.session_state.messages) - 1:
             if input_audio := audiorecorder("音声入力を開始", "音声入力を終了"):
                 input_audio_file = "input_audio.wav"
