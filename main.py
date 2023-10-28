@@ -131,7 +131,7 @@ if st.session_state.messages[-1]["role"] != "simesaba":
                     for part in one_sentence:
                         full_response += part
                         message_placeholder.markdown(full_response+ "▌")
-                        time.sleep(0.02)
+                        time.sleep(0.01)
                     message_placeholder.markdown(full_response)
 
                     one_sentence = [after]
