@@ -67,7 +67,7 @@ if "chat_engine" not in st.session_state.keys():
 
     context_template = PromptTemplate(context_template_str)
 
-    memory = ChatMemoryBuffer.from_defaults(token_limit=300)
+    memory = ChatMemoryBuffer.from_defaults(token_limit=1200)
 
     st.session_state.chat_engine = index.as_chat_engine(
         chat_mode='context',
