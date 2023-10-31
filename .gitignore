@@ -160,4 +160,5 @@ cython_debug/
 #.idea/
 
 .streamlit/
+.DS_Store
 input_audio.wav
